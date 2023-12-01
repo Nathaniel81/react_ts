@@ -28,17 +28,13 @@ const App = () => {
     })
   }
 
-
   return (
-    <div className="container">
-      <div><ListGroup /></div>
-      <ul className="list-group">
-        {cities.map((city) => (
-          <li key={city} onClick={() => handleClick(city)} className={`list-group-item ${activeItems.includes(city) ? 'active': ''}`}>{city}</li>
-        ))}
-      </ul>
-    </div>
-  );
+    <ListGroup 
+    activeItems={activeItems}
+    cities={cities}
+    handleClick={handleClick}
+    />
+  )
 }
 
 export default App;
