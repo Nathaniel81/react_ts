@@ -1,5 +1,6 @@
 import ListGroup from "./components/ListGroup";
-import { MouseEvent } from "react";
+// import { MouseEvent } from "react";
+import { useState } from "react";
 
 
 const App = () => {
@@ -10,8 +11,11 @@ const App = () => {
     'BD',
     'MK'
   ]
-  const handleClick = (e: MouseEvent) => {
-    console.log(e);
+  const [activeItem, setActiveItems] = useState<string | null>(null);
+
+
+  const handleClick = (city: string) => {
+    setActiveItems(city)
   }
 
   return (
@@ -19,7 +23,7 @@ const App = () => {
       <div><ListGroup /></div>
       <ul className="list-group">
         {cities.map((city) => (
-          <li key={city} onClick={handleClick} className="list-group-item">{city}</li>
+          <li key={city} onClick={() => handleClick(city)} className={`list-group-item ${city === activeItem ? 'active': ''}`}>{city}</li>
         ))}
       </ul>
     </div>
