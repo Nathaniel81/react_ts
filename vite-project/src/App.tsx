@@ -1,8 +1,10 @@
+import Message from "./Message";
+
 const App = () => {
   return (
-    <div>App</div>
-  )
+    <div><Message /></div>
+  );
 }
 
 
-export default App
+export default App;
