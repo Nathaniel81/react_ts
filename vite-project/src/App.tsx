@@ -11,19 +11,30 @@ const App = () => {
     'BD',
     'MK'
   ]
-  const [activeItem, setActiveItems] = useState<string | null>(null);
+  // const [activeItem, setActiveItems] = useState<string | null>(null);
+  const [activeItems, setActiveItems] = useState<string[]>([]);
+
 
 
   const handleClick = (city: string) => {
-    setActiveItems(city)
+    // setActiveItems(city)
+    const isSelected = activeItems.includes(city);
+    setActiveItems(prevItems => {
+      if (isSelected) {
+        return prevItems.filter((ct) => ct !== city);
+      } else {
+        return [...prevItems, city]
+      }
+    })
   }
+
 
   return (
     <div className="container">
       <div><ListGroup /></div>
       <ul className="list-group">
         {cities.map((city) => (
-          <li key={city} onClick={() => handleClick(city)} className={`list-group-item ${city === activeItem ? 'active': ''}`}>{city}</li>
+          <li key={city} onClick={() => handleClick(city)} className={`list-group-item ${activeItems.includes(city) ? 'active': ''}`}>{city}</li>
         ))}
       </ul>
     </div>
