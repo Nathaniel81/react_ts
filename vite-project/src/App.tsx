@@ -2,7 +2,9 @@ import Message from "./Message";
 
 const App = () => {
   return (
-    <div><Message /></div>
+    <div className="container">
+      <div><Message /></div>
+    </div>
   );
 }
 
