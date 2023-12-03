@@ -1,14 +1,16 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 interface ListGroupProps {
   cities: string[];
   handleClick: (city: string) => void;
   activeItems: string[];
+  children: ReactNode;
 }
 
-const ListGroup: React.FC<ListGroupProps> = ({ cities, handleClick, activeItems }) => {
+const ListGroup: React.FC<ListGroupProps> = ({ cities, handleClick, activeItems, children }) => {
   return (
-    <div className="container">
+    <div className="container py-5">
+		<h1>{children}</h1>
       <ul className="list-group">
         {cities.map((city) => (
           <li
