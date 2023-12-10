@@ -1,32 +1,49 @@
 import { useEffect, useState } from 'react';
-import Navabar from './Components/Navbar.jsx'
-// import Hero from './Components/Hero.jsx'
+import Navabar from './Components/Navbar.jsx';
 import Foods from './Components/Foods.jsx';
 
-const handleClick = async(id) => {
-    const getFood = await fetch(`http://localhost:5000/data/${id}`)
-    const data = await getFood.json()
-    const currPrice = parseFloat(data.price);
-    const updatedData = { ...data, price: `${currPrice + 10}` };
-    await fetch(`http://localhost:5000/data/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify(updatedData),
-    })
-}
+const fetchFood = async (id) => {
+  const getFood = await fetch(`http://localhost:5000/data/${id}`);
+  const data = await getFood.json();
+  return data;
+};
+
+const handleClick = async (id, setFoods) => {
+  const food = await fetchFood(id);
+  console.log(food);
+  const currPrice = parseFloat(food.price);
+  const updatedData = { ...food, price: `$${currPrice + 10}` };
+
+  await fetch(`http://localhost:5000/data/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify(updatedData),
+  });
+
+  // Fetch the updated data after the PUT request
+  const updatedFood = await fetchFood(id);
+  console.log(updatedFood);
+
+  // Update the state with the updated data
+  setFoods((prevFoods) =>
+    prevFoods.map((prevFood) => (prevFood.id === id ? updatedFood : prevFood))
+  );
+};
 
 function App() {
-  const [foods, setFoods] = useState([])
+  const [foods, setFoods] = useState([]);
+
   useEffect(() => {
-    const fetchFoods = async() => {
+    const fetchFoods = async () => {
       const response = await fetch('http://localhost:5000/data');
       const data = await response.json();
       setFoods(data);
-    }
+    };
+
     fetchFoods();
-  }, [])
+  }, []);
 
   return (
     <>
@@ -36,12 +53,10 @@ function App() {
         </div>
       </div>
       <div className="container">
-        {/* <div className=''>
-          <Hero food={foods[0]}/>
-        </div> */}
-        <Foods foods={foods} handleClick={handleClick}/>
+        <Foods foods={foods} handleClick={(id) => handleClick(id, setFoods)} />
       </div>
     </>
-  )
+  );
 }
-export default App
+
+export default App;
