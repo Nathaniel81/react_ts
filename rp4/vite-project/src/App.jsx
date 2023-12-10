@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import Navabar from './Components/Navbar.jsx';
 import Foods from './Components/Foods.jsx';
+import Footer from './Components/Footer.jsx';
+import About from './Components/About.jsx';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 const fetchFood = async (id) => {
   const getFood = await fetch(`http://localhost:5000/data/${id}`);
@@ -46,7 +49,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <Router>
       <div className="mx-auto text-lime-50">
         <div className="container">
           <Navabar />
@@ -55,7 +58,11 @@ function App() {
       <div className="container">
         <Foods foods={foods} handleClick={(id) => handleClick(id, setFoods)} />
       </div>
-    </>
+      <Routes>
+        <Route path='/about' element={<About />} />
+      </Routes>
+      <Footer />
+    </Router>
   );
 }
 
