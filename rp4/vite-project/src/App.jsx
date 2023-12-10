@@ -37,6 +37,7 @@ const handleClick = async (id, setFoods) => {
 
 function App() {
   const [foods, setFoods] = useState([]);
+  // const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchFoods = async () => {
@@ -59,7 +60,8 @@ function App() {
         <Foods foods={foods} handleClick={(id) => handleClick(id, setFoods)} />
       </div>
       <Routes>
-        <Route path='/about' element={<About />} />
+        <Route path="/" exact element={<Foods foods={foods} handleClick={(id) => handleClick(id, setFoods)} />} />
+        <Route path="/about" element={<About />} />
       </Routes>
       <Footer />
     </Router>
