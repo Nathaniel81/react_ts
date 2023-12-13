@@ -41,6 +41,17 @@ function App() {
       setTaskInput('');
   }
 
+  const onDelete = async (id, e) => {
+    e.stopPropagation();
+    const res = await fetch(`http://localhost:8000/api/task-delete/${id}`, {
+      method: 'DELETE',
+    })
+
+    res.status === 200
+      ? setTasks(tasks.filter((task) => task.id !== id))
+      : alert('Error Deleting This Task')
+  }
+
   return (
     <>
       <div className= 'container'>
@@ -65,7 +76,7 @@ function App() {
               </div>
             </form>
           </div>
-          <Tasks tasks={tasks} handleClick={handleClick}/>
+          <Tasks tasks={tasks} handleClick={handleClick} onDelete={onDelete}/>
         </div>
       </div>
     </>
