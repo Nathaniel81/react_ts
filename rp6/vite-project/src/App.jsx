@@ -31,8 +31,7 @@ function App() {
     e.preventDefault()
     console.log('Submit')
   }
-  
-  
+
   return (
     <>
       <div className= 'container'>
