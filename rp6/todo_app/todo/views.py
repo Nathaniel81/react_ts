@@ -36,7 +36,7 @@ def taskCreate(request):
         serializer.save()
     return Response(serializer.data)
 
-@api_view(['POST'])
+@api_view(['PUT'])
 def taskUpdate(request, pk):
     task = get_object_or_404(Task, pk=pk)
     serializer = TaskSerilaizer(instance=task, data=request.data)

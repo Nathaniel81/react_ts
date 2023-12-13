@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-function Tasks({ tasks, handleClick, onDelete }) {
+function Tasks({ tasks, handleClick, onDelete, editTask }) {
   return (
 	<>
 		{tasks.map((task, index) => (
@@ -17,7 +17,7 @@ function Tasks({ tasks, handleClick, onDelete }) {
 					)}
 				</div>
 				<div style={{flex:1}}>
-                    <button className="btn btn-sm btn-outline-info">Edit</button>
+                    <button className="btn btn-sm btn-outline-info" onClick={(e) => editTask(task.id, e)}>Edit</button>
                 </div>
 				<div style={{flex:1}}>
 					<button className="btn btn-sm btn-outline-dark delete" onClick={(e) => onDelete(task.id, e)}>-</button>
@@ -34,6 +34,7 @@ Tasks.propTypes = {
 	tasks: PropTypes.array.isRequired,
 	handleClick: PropTypes.func.isRequired,
 	onDelete: PropTypes.func.isRequired,
+	editTask: PropTypes.func.isRequired,
   };
 Tasks.defaultProps = {
 	tasks: [],
