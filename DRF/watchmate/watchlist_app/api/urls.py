@@ -2,6 +2,6 @@ from django.urls import path
 from watchlist_app.api import views
 
 urlpatterns = [
-    path('',  views.movie_list, name='list'),
-    path('<str:pk>/', views.movie_detail, name='detail')
+    path('',  views.MovieListAV.as_view(), name='list'),
+    path('<str:pk>/', views.MovieDetailAV.as_view(), name='detail')
 ]
