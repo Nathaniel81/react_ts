@@ -33,8 +33,14 @@ class WatchListSerializer(serializers.ModelSerializer):
     #     instance.active = validated_data.get('active', instance.active)
     #     instance.save()
     #     return instance
-class StreamPlatformSerializer(serializers.ModelSerializer):
-    watchlist = WatchListSerializer(many=True, read_only=True)
+class StreamPlatformSerializer(serializers.HyperlinkedModelSerializer):
+    # watchlist = WatchListSerializer(many=True, read_only=True)
+    watchlist = serializers.StringRelatedField(many=True, read_only=True)
+    # watchlist = serializers.HyperlinkedRelatedField(
+    #     many=True,
+    #     read_only=True,
+    #     view_name='movie-detail',
+    # )
     class Meta:
         model = StreamPlatform
         fields = '__all__'
