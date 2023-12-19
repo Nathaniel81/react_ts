@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from watchlist_app.models import WatchList
+from watchlist_app.models import WatchList, StreamPlatform
 
 def nameValidator(value):
     if len(value) < 2:
@@ -13,14 +13,14 @@ class WatchListSerializer(serializers.ModelSerializer):
     # def get_len_name(self, object):
     #     length = len(object.name)
     #     return length
-    def validate(self, data):
-        if data['name'] == data['description']:
-            raise serializers.ValidationError('Title & description should different')
-        return data
-    def validate_name(self, value):
-        if len(value) < 2:
-            raise serializers.ValidationError('Name is too short')
-        return value
+    # def validate(self, data):
+    #     if data['name'] == data['description']:
+    #         raise serializers.ValidationError('Title & description should different')
+    #     return data
+    # def validate_name(self, value):
+    #     if len(value) < 2:
+    #         raise serializers.ValidationError('Name is too short')
+    #     return value
     # id = serializers.IntegerField(read_only=True)
     # name = serializers.CharField(validators=[nameValidator])
     # description = serializers.CharField()
@@ -33,3 +33,7 @@ class WatchListSerializer(serializers.ModelSerializer):
     #     instance.active = validated_data.get('active', instance.active)
     #     instance.save()
     #     return instance
+class StreamPlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StreamPlatform
+        fields = '__all__'
