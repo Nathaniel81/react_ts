@@ -5,10 +5,14 @@ def nameValidator(value):
     if len(value) < 2:
         raise serializers.ValidationError('Name is too short')
 class MovieSerializer(serializers.ModelSerializer):
+    # len_name = serializers.SerializerMethodField()
     class Meta:
         model = Movie
         fields = '__all__'
-
+        #exclude
+    # def get_len_name(self, object):
+    #     length = len(object.name)
+    #     return length
     def validate(self, data):
         if data['name'] == data['description']:
             raise serializers.ValidationError('Title & description should different')
