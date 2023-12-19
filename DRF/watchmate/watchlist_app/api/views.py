@@ -52,8 +52,6 @@ class WatchDetailAV(APIView):
         movie = WatchList.objects.get(pk=pk)
         movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 class StreamPlatformDetailAV(APIView):
     def get(self, request, pk):
         try:
