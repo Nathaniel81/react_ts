@@ -6,17 +6,10 @@ from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSe
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.views import APIView
 
-class StreamPlatformAV(viewsets.ViewSet):
-    def list(self, request):
-        queryset = WatchList.objects.all()
-        serializer = WatchListSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, pk=None):
-        queryset = WatchList.objects.all()
-        user = get_object_or_404(queryset, pk=pk)
-        serializer = WatchListSerializer(user)
-        return Response(serializer.data)
+class StreamPlatformt(viewsets.ReadOnlyModelViewSet):
+    queryset = StreamPlatform.objects.all()
+    serializer_class = StreamPlatformSerializer
+    
 # class StreamPlatformAV(APIView):
 #     def get(self, request):
 #         platforms = StreamPlatform.objects.all()
