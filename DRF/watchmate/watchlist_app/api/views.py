@@ -8,7 +8,7 @@ from rest_framework import status, generics, mixins, viewsets
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from watchlist_app.api.permissions import AdminOrReadOnly, IsOwnerOrReadOnly
-#pwd=m)l74M0l$l4W
+#pwd=   m)l74M0l$l4W
 class StreamPlatform(viewsets.ReadOnlyModelViewSet):
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerializer
@@ -95,12 +95,20 @@ class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     def perform_create(self, serializer):
         pk = self.kwargs['pk']
-        movie = WatchList.objects.get(pk=pk)
+        watchlist = WatchList.objects.get(pk=pk)
         review_user = self.request.user
-        if Review.objects.filter(watchlist=movie, review_user=review_user).exists():
+        if Review.objects.filter(watchlist=watchlist, review_user=review_user).exists():
             raise ValidationError("Already Reviwed")
+
+        if watchlist.tot_ratings == 0:
+            watchlist.avg_rating = serializer.validated_data['rating']
+        else:
+            watchlist.avg_rating = (serializer.validated_data['rating'] + watchlist.avg_rating)/2
+
+        watchlist.tot_ratings += 1
+        watchlist.save()
         
-        serializer.save(watchlist=movie)
+        serializer.save(watchlist=watchlist, review_user=review_user)
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()

@@ -46,7 +46,7 @@ class StreamPlatformSerializer(serializers.HyperlinkedModelSerializer):
         model = StreamPlatform
         fields = '__all__'
 class ReviewSerializer(serializers.ModelSerializer):
-    # review_user = serializers.StringRelatedField(many=True, read_only=True)
+    review_user = serializers.StringRelatedField(many=False, read_only=True)
     class Meta:
         model = Review
         # fields = '__all__'
