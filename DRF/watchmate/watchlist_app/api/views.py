@@ -85,7 +85,7 @@ class StreamPlatformDetailAV(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 class ReviewList(generics.ListAPIView):
     # queryset = Review.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     serializer_class = ReviewSerializer
     def get_queryset(self):
         pk = self.kwargs['pk']
