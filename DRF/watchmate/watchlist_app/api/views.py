@@ -1,14 +1,17 @@
 # from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError
 from watchlist_app.models import WatchList, StreamPlatform, Review
 from .serializers import WatchListSerializer, StreamPlatformSerializer, ReviewSerializer
 from rest_framework import status, generics, mixins, viewsets
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
-class StreamPlatformt(viewsets.ReadOnlyModelViewSet):
+class StreamPlatform(viewsets.ReadOnlyModelViewSet):
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerializer
+
     
 # class StreamPlatformAV(APIView):
 #     def get(self, request):
@@ -38,6 +41,8 @@ class WatchListAV(APIView):
             return Response(serializer.errors)
 
 class WatchDetailAV(APIView):
+    # permission_classes = [IsAuthenticated]
+
     def get(self, request, pk):
         try:
             movie = WatchList.objects.get(pk=pk)
@@ -79,20 +84,27 @@ class StreamPlatformDetailAV(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 class ReviewList(generics.ListAPIView):
     # queryset = Review.objects.all()
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = ReviewSerializer
     def get_queryset(self):
         pk = self.kwargs['pk']
         return Review.objects.filter(watchlist=pk)
 class ReviewCreate(generics.CreateAPIView):
+    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     def perform_create(self, serializer):
         pk = self.kwargs['pk']
         movie = WatchList.objects.get(pk=pk)
+        review_user = self.request.user
+        if Review.objects.filter(watchlist=movie, review_user=review_user).exists():
+            raise ValidationError("Already Reviwed")
+        
         serializer.save(watchlist=movie)
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 # class ReviewList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
 #     queryset = Review.objects.all()
 #     serializer_class = ReviewSerializer
