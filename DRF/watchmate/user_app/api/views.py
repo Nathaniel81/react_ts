@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework import status
 from .serializers import RegistrationSerializer
 from user_app import models
 
@@ -11,7 +12,6 @@ def registration_view(request):
         data = {}
         if serializer.is_valid():
             account = serializer.save()
-            print('Account:', account)
             data['response'] = 'Successfully registered'
             data['username'] = account.username
             data['email'] = account.email
@@ -23,3 +23,8 @@ def registration_view(request):
                 'errors': serializer.errors
             }
         return Response(data)
+@api_view(['POST'])
+def logout_view(request):
+    if request.method == 'POST':
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)
