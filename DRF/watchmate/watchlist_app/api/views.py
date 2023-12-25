@@ -42,7 +42,7 @@ class WatchListAV(APIView):
             return Response(serializer.errors)
 
 class WatchDetailAV(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [AdminOrReadOnly]
 
     def get(self, request, pk):
         try:
@@ -85,13 +85,14 @@ class StreamPlatformDetailAV(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 class ReviewList(generics.ListAPIView):
     # queryset = Review.objects.all()
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = ReviewSerializer
     def get_queryset(self):
         pk = self.kwargs['pk']
         return Review.objects.filter(watchlist=pk)
 class ReviewCreate(generics.CreateAPIView):
     queryset = Review.objects.all()
+    permission_classes = [IsAuthenticated]
     serializer_class = ReviewSerializer
     def perform_create(self, serializer):
         pk = self.kwargs['pk']
