@@ -143,8 +143,10 @@ REST_FRAMEWORK = {
         # 'rest_framework.throttling.UserRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '1/day',
-        'user': '2/day'
+        'anon': '3/day',
+        'user': '4/day',
+        'review-list': '1/day',
+        'review-create': '2/day'
     }
 }
 # SIMPLE_JWT = {

@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from watchlist_app.api.permissions import AdminOrReadOnly, IsOwnerOrReadOnly
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+from .throttling import ReviewListThrottle, ReviewCreateThrottle
 #pwd=   m)l74M0l$l4W
 class StreamPlatform(viewsets.ReadOnlyModelViewSet):
     queryset = StreamPlatform.objects.all()
@@ -28,9 +29,9 @@ class StreamPlatform(viewsets.ReadOnlyModelViewSet):
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         else:
 #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class WatchListAV(APIView):
-    throttle_classes = [AnonRateThrottle]
+    # throttle_classes = [AnonRateThrottle, UserRateThrottle]
+    # throttle_classes = [WatchListThrottle]
     def get(self, request):
         movies = WatchList.objects.all()
         serializer = WatchListSerializer(movies, many=True)
@@ -88,6 +89,7 @@ class StreamPlatformDetailAV(APIView):
 class ReviewList(generics.ListAPIView):
     # queryset = Review.objects.all()
     # permission_classes = [IsAuthenticated]
+    throttle_classes = [ReviewListThrottle]
     serializer_class = ReviewSerializer
     def get_queryset(self):
         pk = self.kwargs['pk']
