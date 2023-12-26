@@ -7,6 +7,7 @@ def nameValidator(value):
 class WatchListSerializer(serializers.ModelSerializer):
     # len_name = serializers.SerializerMethodField()
     reviews = serializers.StringRelatedField(many=True, read_only=True)
+    platform = serializers.CharField(source='platform.name')
     class Meta:
         model = WatchList
         fields = '__all__'
@@ -49,5 +50,4 @@ class ReviewSerializer(serializers.ModelSerializer):
     review_user = serializers.StringRelatedField(many=False, read_only=True)
     class Meta:
         model = Review
-        # fields = '__all__'
         exclude = ('watchlist',)
