@@ -149,8 +149,8 @@ REST_FRAMEWORK = {
     #     'review-list': '1/day',
     #     'review-create': '2/day'
     # }
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 2
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    # 'PAGE_SIZE': 2
 }
 # SIMPLE_JWT = {
 #     'ROTATE_REFRESH_TOKENS' : True,
