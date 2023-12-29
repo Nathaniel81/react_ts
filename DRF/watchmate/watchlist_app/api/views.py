@@ -12,6 +12,7 @@ from watchlist_app.api.permissions import AdminOrReadOnly, IsOwnerOrReadOnly
 # from .throttling import ReviewListThrottle, ReviewCreateThrottle, ScopedRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from .pagination import WatchListPagination, ReviewListCPagination
 #pwd=   m)l74M0l$l4W
 
 class UserReview(generics.ListAPIView):
@@ -103,7 +104,8 @@ class ReviewList(generics.ListAPIView):
     # throttle_scope = 'review-list'
     serializer_class = ReviewSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['description', 'active']
+    search_fields = ['description']
+    pagination_class = ReviewListCPagination
     def get_queryset(self):
         pk = self.kwargs['pk']
         return Review.objects.filter(watchlist=pk)
@@ -111,6 +113,7 @@ class ReviewCreate(generics.CreateAPIView):
     queryset = Review.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = ReviewSerializer
+    pagination_class = WatchListPagination
     def perform_create(self, serializer):
         pk = self.kwargs['pk']
         watchlist = WatchList.objects.get(pk=pk)
