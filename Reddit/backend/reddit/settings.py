@@ -76,6 +76,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'reddit.wsgi.application'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
