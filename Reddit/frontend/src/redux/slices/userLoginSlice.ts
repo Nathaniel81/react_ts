@@ -7,8 +7,12 @@ interface UserState {
   error: string | null;
 }
 
+const userInfoFromStorage = localStorage.getItem('userInfo')
+  ? JSON.parse(localStorage.getItem('userInfo') as string)
+  : null;
+
 const initialState: UserState = {
-  userInfo: null,
+  userInfo: userInfoFromStorage,
   loading: false,
   error: null
 }

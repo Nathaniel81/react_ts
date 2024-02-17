@@ -1,4 +1,4 @@
-import { buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { ChevronLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
