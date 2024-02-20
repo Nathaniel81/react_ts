@@ -4,7 +4,8 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-
+import CreateSubredditPage from './pages/CreateSubredditPage';
+import SubredditDetailPage from './pages/SubredditDetailPage';
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/sign-in" element={<LoginPage />} />
             <Route path="/sign-up" element={<RegisterPage />} />
+            <Route path="/r/create" element={<CreateSubredditPage />} />
+            <Route path="/r/:slug" element={<SubredditDetailPage />} />
           </Routes>
         </div>
       </Router>

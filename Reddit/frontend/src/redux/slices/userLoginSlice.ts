@@ -1,8 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 
+interface User {access: string}
+
 interface UserState {
-  userInfo: null;
+  userInfo: User | null;
   loading: boolean;
   error: string | null;
 }
@@ -26,7 +28,7 @@ export const fetchUserInfo = createAsyncThunk(
           'Content-type': 'application/json'
         }
       }
-      const { data } = await axios.post(`http://127.0.0.1:8000/api/user/login/`, { email, password }, config)
+      const { data } = await axios.post(`/api/user/login/`, { email, password }, config)
       localStorage.setItem('userInfo', JSON.stringify(data))
       return data
     } catch (error) {

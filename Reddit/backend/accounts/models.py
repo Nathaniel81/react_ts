@@ -22,6 +22,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 class User(AbstractUser):
     name = models.CharField(max_length=200, null=True)
+    username = models.CharField(max_length=150, unique=False, blank=True)
     email = models.EmailField(unique=True)
     dob = models.DateField(null=True, blank=True)
     karma = models.IntegerField(default=0)
