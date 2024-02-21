@@ -79,7 +79,7 @@ class SubredditDetail(generics.RetrieveUpdateDestroyAPIView):
 
     #     return Response(subreddit_detail)
 
-class SubscribeView(generics.UpdateAPIView):
+class SubscribeView(generics.UpdateAPIView):#ASTK
     queryset = Subreddit.objects.all()
     lookup_field = 'name'
 
@@ -88,7 +88,7 @@ class SubscribeView(generics.UpdateAPIView):
         subreddit.subscribers.add(request.user)
         return Response({'message': 'subscribed successfully'}, status=status.HTTP_204_NO_CONTENT)
 
-class UnsubscribeView(generics.UpdateAPIView):
+class UnsubscribeView(generics.UpdateAPIView):#ASTK
     queryset = Subreddit.objects.all()
     lookup_field = 'name'
 
@@ -96,3 +96,106 @@ class UnsubscribeView(generics.UpdateAPIView):
         subreddit = self.get_object()
         subreddit.subscribers.remove(request.user)
         return Response({'message': 'unsubscribed successfully'} ,status=status.HTTP_204_NO_CONTENT)
+
+from bs4 import BeautifulSoup
+import requests
+from rest_framework.decorators import api_view
+
+# @api_view(['GET'])
+# def fetch_url_metadata(request):
+#     url = request.GET.get('url')
+
+#     if not url:
+#         return Response('Invalid URL', status=400)
+
+#     response = requests.get(url)
+#     soup = BeautifulSoup(response.text, 'html.parser')
+
+#     title = soup.title.string if soup.title else ''
+#     description_tag = soup.find('meta', attrs={'name': 'description'})
+#     description = description_tag['content'] if description_tag else ''
+#     image_tag = soup.find('meta', attrs={'property': 'og:image'})
+#     image_url = image_tag['content'] if image_tag else ''
+
+#     return Response({
+#         'success': 1,
+#         'meta': {
+#             'title': title,
+#             'description': description,
+#             'image': {
+#                 'url': image_url,
+#             },
+#         },
+#     })
+
+@api_view(['GET'])
+def fetch_url_metadata(request):
+    url = request.GET.get('url')
+
+    if not url:
+        return Response('Invalid URL', status=400)
+
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    title = soup.title.string if soup.title else ''
+    description_tag = soup.find('meta', attrs={'name': 'description'})
+    description = description_tag['content'] if description_tag else ''
+    image_tag = soup.find('meta', attrs={'property': 'og:image'})
+    image_url = image_tag['content'] if image_tag else ''
+
+    return Response({
+        'success': 1,
+        'meta': {
+            'title': title,
+            'description': description,
+            'image': {
+                'url': image_url,
+            },
+        },
+    })
+
+# @api_view(['POST'])
+# def upload_file(request):
+#     uploaded_file = request.FILES['file']
+#     filename = uploaded_file.name
+#     file_url = f"/media/{filename}"
+#     with open(f"./media/{filename}", 'wb+') as destination:
+#         for chunk in uploaded_file.chunks():
+#             destination.write(chunk)
+#     return Response({
+#         'success': 1,
+#         'file': {
+#             'url': file_url,
+#         },
+#     })
+from django.core.files.storage import FileSystemStorage
+
+@api_view(['POST'])
+def upload_image(request):
+    uploaded_file = request.FILES['image']
+    fs = FileSystemStorage()
+    filename = fs.save(uploaded_file.name, uploaded_file)
+    file_url = fs.url(filename)
+    return Response({
+        'success': 1,
+        'file': {
+            'url': file_url,
+        },
+    })
+
+@api_view(['POST'])
+def upload_file(request):
+    uploaded_file = request.FILES['file']
+    fs = FileSystemStorage()
+    filename = fs.save(uploaded_file.name, uploaded_file)
+    file_url = fs.url(filename)
+    file_size = fs.size(filename)
+    return Response({
+        'success': 1,
+        'file': {
+            'url': file_url,
+            'name': uploaded_file.name,
+            'size': file_size,
+        },
+    })

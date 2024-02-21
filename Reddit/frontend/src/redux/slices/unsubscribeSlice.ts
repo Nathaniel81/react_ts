@@ -7,7 +7,7 @@ interface SubredditDetail {
 }
 
 interface LeaveSubredditState {
-  loading: boolean | null;
+  loading: boolean | undefined;
   error: string | null;
   success: string | null;
 }
@@ -50,7 +50,9 @@ export const unsubscribe = createAsyncThunk<SubredditDetail, UnsubscribeArg, { s
 const leaveSubredditSlice = createSlice({
   name: 'leaveSubreddit',
   initialState,
-  reducers: {},
+  reducers: {
+    resetState: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(unsubscribe.pending, (state) => {
@@ -70,3 +72,4 @@ const leaveSubredditSlice = createSlice({
 });
 
 export default leaveSubredditSlice.reducer;
+export const { resetState } = leaveSubredditSlice.actions;

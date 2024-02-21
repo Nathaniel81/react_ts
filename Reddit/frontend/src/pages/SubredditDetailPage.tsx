@@ -1,31 +1,31 @@
-import { format } from 'date-fns'
+// import { format } from 'date-fns'
 import { fetchSubreddit } from '@/redux/slices/subredditDetailSlice'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {  AppDispatch, RootState } from '@/redux/store'
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import SubredditDetail from '@/components/SubredditDetail'
-import { buttonVariants } from '@/components/ui/Button'
-import SubscribeLeaveToggle from '@/components/SubscribeLeaveToggle'
-
+import SubredditSidebar from '../components/SubredditSidebar';
+// import { buttonVariants } from '@/components/ui/Button'
+// import SubscribeLeaveToggle from '@/components/SubscribeLeaveToggle'
 
 
 const SubredditDetailPage = () => {
-  const location = useLocation();
-  const path = location.pathname;
-  const navigate = useNavigate();
+  // const location = useLocation();
+  // const path = location.pathname;
+  // const navigate = useNavigate();
   const { slug } = useParams();
   const subredditName = slug ?? 'default'; 
 
   const subredditDetail = useSelector((state: RootState) => state.subredditDetail);
   const { subreddit } = subredditDetail;
 
-  const userLogin = useSelector((state: RootState) => state.userLogin);
-  const { userInfo } = userLogin
+  // const userLogin = useSelector((state: RootState) => state.userLogin);
+  // const { userInfo } = userLogin;
 
   const dispatch = useDispatch<AppDispatch>();
 
-  const isSubscribed = subreddit && subreddit.is_subscriber;
+  // const isSubscribed = subreddit && subreddit.is_subscriber;
     useEffect(() => {
       if (!subreddit.name) {
         dispatch(fetchSubreddit({ name: subredditName }))
@@ -43,7 +43,8 @@ const SubredditDetailPage = () => {
             <SubredditDetail />
           </ul>
 
-          <div className='overflow-hidden h-fit rounded-lg border border-gray-200 order-first md:order-last'>
+          <SubredditSidebar />
+          {/* <div className='overflow-hidden h-fit rounded-lg border border-gray-200 order-first md:order-last'>
             <div className='px-6 py-4'>
               <p className='font-semibold py-3'>About r/{subreddit.name}</p>
             </div>
@@ -69,13 +70,6 @@ const SubredditDetailPage = () => {
                   <dt className='text-gray-500'>You created this community</dt>
                 </div>
               ) : null}
-              {/* {subreddit && subreddit.creator && subreddit.creator.id !== userInfo?.id ? (
-                  <SubscribeLeaveToggle />
-                  isSubscribed={isSubscribed}
-                //   subredditId={subreddit.id}
-                //   subredditName={subreddit.name}
-                // />
-              ) : null} */}
               {subreddit && subreddit.creator && subreddit.creator.id !== userInfo?.id ? (
                 <SubscribeLeaveToggle
                   isSubscribed={isSubscribed}
@@ -83,8 +77,6 @@ const SubredditDetailPage = () => {
                   subredditName={subreddit.name}
                 />
               ) : null}
-
-              {/* ASTK */}
               <div
                 className={buttonVariants({
                   variant: 'outline',
@@ -93,10 +85,9 @@ const SubredditDetailPage = () => {
                 onClick={()=> navigate(path + `/submit`)}>
                 Create Post
               </div>
-              {/* ASTK */}
 
             </dl>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import CreateSubredditPage from './pages/CreateSubredditPage';
 import SubredditDetailPage from './pages/SubredditDetailPage';
+import CreatePostPage from './pages/CreatePostPage';
+
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
             <Route path="/sign-up" element={<RegisterPage />} />
             <Route path="/r/create" element={<CreateSubredditPage />} />
             <Route path="/r/:slug" element={<SubredditDetailPage />} />
+            <Route path="/r/:slug/submit" element={<CreatePostPage />} />
           </Routes>
         </div>
       </Router>

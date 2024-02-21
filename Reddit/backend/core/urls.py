@@ -8,4 +8,8 @@ urlpatterns = [
 
     path('subreddit/<str:name>/subscribe/', views.SubscribeView.as_view(), name='subscribe'),
     path('subreddit/<str:name>/unsubscribe/', views.UnsubscribeView.as_view(), name='unsubcribe'),
+
+    path('link/', views.fetch_url_metadata),
+    path('upload-image/', views.upload_image),
+    path('upload-file/', views.upload_file),
 ]

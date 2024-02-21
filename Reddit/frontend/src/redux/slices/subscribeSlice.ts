@@ -7,7 +7,7 @@ interface SubredditDetail {
 }
 
 interface JoinSubredditState {
-  loading: boolean | null;
+  loading: boolean | undefined;
   error: string | null;
   success: string | null;
 }
@@ -50,7 +50,9 @@ export const subscribe = createAsyncThunk<SubredditDetail, SubscribeArg, { state
 const joinSubredditSlice = createSlice({
   name: 'joinSubreddit',
   initialState,
-  reducers: {},
+  reducers: {
+	resetState: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(subscribe.pending, (state) => {
@@ -70,3 +72,5 @@ const joinSubredditSlice = createSlice({
 });
 
 export default joinSubredditSlice.reducer;
+export const { resetState } = joinSubredditSlice.actions;
+
