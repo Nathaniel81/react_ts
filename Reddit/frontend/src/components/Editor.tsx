@@ -1,30 +1,32 @@
 import EditorJS from '@editorjs/editorjs'
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
-
-
-
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
+import { createPost } from '@/redux/slices/postCreateSlice';
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { PostCreationRequest, PostValidator } from '@/lib/validators/post';
 import { z } from 'zod'
 import { useCallback, useEffect, useRef, useState } from 'react'
-// import { toast } from '@/hooks/use-toast'
-// import { uploadFiles } from '@/lib/uploadthing'
-// import { useMutation } from '@tanstack/react-query'
-// import axios from 'axios'
+import {  AppDispatch, RootState } from '@/redux/store'
+import { useSelector, useDispatch} from 'react-redux'
+import { resetState } from '@/redux/slices/postCreateSlice';
 
 // import '@/styles/editor.css'
 
 type FormData = z.infer<typeof PostValidator>
 
 interface EditorProps {
-  subredditId: string
+  subredditId: number;
 }
 
-// interface IProps {}
 
 const Editor: React.FC<EditorProps> = ({ subredditId }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const newPost = useSelector((state: RootState) => state.postCreate);
+    const { success, loading, error } = newPost;
+
     const {
         register,
         handleSubmit,
@@ -38,12 +40,13 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
         },
       })
 
+      const { toast } = useToast()
       const ref = useRef<EditorJS>()
       const _titleRef = useRef<HTMLTextAreaElement>(null)
-    //   const router = useRouter()
+
       const [isMounted, setIsMounted] = useState<boolean>(false)
-      const location = useLocation()
-      const pathname = location.pathname
+      const dispatch = useDispatch<AppDispatch>()
+
 
       const initializeEditor = useCallback(async () => {
         const EditorJS = (await import('@editorjs/editorjs')).default
@@ -93,20 +96,23 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
       }, [])
 
       useEffect(() => {
-        // if (typeof window !== 'undefined') {
           setIsMounted(true)
-        // }
       }, [])
 
-    //   useEffect(() => {
-    //     if (isMounted) {
-    //       initializeEditor();
-    //     }
-    //     return () => {
-    //       ref.current?.destroy();
-    //       ref.current = null;
-    //     };
-    //   }, [isMounted, initializeEditor]);
+    useEffect(() => {
+        if (Object.keys(errors).length) {
+          
+          for (const [_key, value] of Object.entries(errors)) {
+            console.log(_key, value)
+            value
+            toast({
+              title: 'Something went wrong.',
+              description: (value as { message: string }).message,
+              variant: 'destructive',
+            })
+          }
+        }
+      }, [errors, toast])
 
       useEffect(() => {
         const init = async () => {
@@ -129,21 +135,52 @@ const Editor: React.FC<EditorProps> = ({ subredditId }) => {
 
     const { ref: titleRef, ...rest } = register('title')
 
+    async function onSubmit(data: FormData) {
+        const blocks = await ref.current?.save()
+        console.log(blocks)
+    
+        const payload: PostCreationRequest = {
+          title: data.title,
+          content: blocks,
+          subredditId,
+        }
+        dispatch(createPost(payload))
+      }
+
+      useEffect(() => {
+
+      }, [])
+
+      useEffect(() => {
+        if (error) {
+          toast({
+            title: 'Something went wrong.',
+            description: 'Your post was not published. Please try again.',
+            variant: 'destructive',
+          });
+        } else if (success) {
+          toast({
+            description: 'Your post has been published.',
+          });
+          // turn pathname /r/mycommunity/submit into /r/mycommunity
+          const newPathname = location.pathname.split('/').slice(0, -1).join('/');
+          navigate(newPathname);
+          dispatch(resetState())
+        }
+      }, [error, loading, navigate, location.pathname, toast, success, dispatch]);
+
     return (
-
-
-
     <div className='w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200'>
       <form
         id='subreddit-post-form'
         className='w-fit'
-        // onSubmit={handleSubmit(onSubmit)}>
+        onSubmit={handleSubmit(onSubmit)}
         >
           <div className='prose prose-stone dark:prose-invert'>
           <TextareaAutosize
             ref={(e) => {
               titleRef(e)
-              // @ts-expect-error stop
+              // @ts-expect-error chill
               _titleRef.current = e
             }}
             {...rest}

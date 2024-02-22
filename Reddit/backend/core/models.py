@@ -1,5 +1,7 @@
 from django.db import models
 from accounts.models import User
+from django_editorjs_fields import EditorJsJSONField
+
 
 class Subreddit(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -16,16 +18,49 @@ class Subreddit(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=300)
-    content = models.TextField()
+    title = models.CharField(max_length=100, null=True, blank=True)
+    # content = EditorJsJSONField()
+    content=EditorJsJSONField(
+        plugins=[
+            "@editorjs/image",
+            "@editorjs/header",
+            "editorjs-github-gist-plugin",
+            "@editorjs/code@2.6.0",  # version allowed :)
+            "@editorjs/list@latest",
+            "@editorjs/inline-code",
+            "@editorjs/table",
+        ],
+         tools={
+                "Link":{
+                    "config":{
+                        "endpoint":
+                            'api/link/'
+                        }
+                },
+                "Image":{
+                    "config":{
+                        "endpoints":{
+                            "byFile":'api/upload-file/',
+                            "byUrl":'api/upload-image/'
+                        },
+                       
+                    }
+                },
+                # "Attaches":{
+                #     "config":{
+                #         "endpoint":'/uploadf/'
+                #     }
+                # }
+            }
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     subreddit = models.ForeignKey(Subreddit, on_delete=models.CASCADE)
     upvotes = models.ManyToManyField(User, blank=True, related_name='upvoted_posts')
     downvotes = models.ManyToManyField(User, blank=True, related_name='downvoted_posts')
 
-    def __str__(self):
-        return self.title
+    # def __str__(self):
+    #     return self.created_at
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)

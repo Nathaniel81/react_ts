@@ -12,4 +12,7 @@ urlpatterns = [
     path('link/', views.fetch_url_metadata),
     path('upload-image/', views.upload_image),
     path('upload-file/', views.upload_file),
+
+    # path('create-post/', views.create_post),
+    path('post-list/', views.post_list),
 ]

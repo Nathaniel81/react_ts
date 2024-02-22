@@ -3,9 +3,14 @@ import { useParams } from 'react-router-dom';
 import Editor from "@/components/Editor";
 import SubredditSidebar from "@/components/SubredditSidebar";
 // interface IProps {}
+import { useSelector } from 'react-redux'
+import {   RootState } from '@/redux/store'
 
 const CreatePostPage = () => {
   const { slug } = useParams();
+
+  const subredditDetail = useSelector((state: RootState) => state.subredditDetail);
+  const { subreddit } = subredditDetail;
 
   //ASTK ERR-HND
 
@@ -24,8 +29,8 @@ const CreatePostPage = () => {
             </p>
           </div>
         </div>
-  
-        <Editor  />
+
+        <Editor subredditId={subreddit.id} />
   
         <div className='w-full flex justify-end'>
           <Button type='submit' className='w-full' form='subreddit-post-form'>

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom"
 import { ModeToggle } from "./mode-toggle"
 import { buttonVariants } from './ui/Button'
 import { RootState } from '@/redux/store'
-
+import Counter from './uRf'
 
 const Navbar = () => {
   const userLogin = useSelector((state: RootState) => state.userLogin);
@@ -33,6 +33,7 @@ const Navbar = () => {
         <ModeToggle />
         </div>
       </div>
+      <Counter />
     </div>
   )
 }

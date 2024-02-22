@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 	'core',
 	'accounts',
 	'corsheaders',
+    'django_editorjs_fields',
 ]
 
 MIDDLEWARE = [

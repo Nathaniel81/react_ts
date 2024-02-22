@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from .models import Subreddit
-from .serializers import SubredditSerializer, SubredditSerializer_detailed
+from .models import Subreddit, Post
+from .serializers import SubredditSerializer, SubredditSerializer_detailed, PostSerializer
 # from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAuthenticatedOrReadOnly
 from django.db import IntegrityError
@@ -199,3 +199,67 @@ def upload_file(request):
             'size': file_size,
         },
     })
+
+# @api_view(['POST'])
+# def create_post(request):
+#     content = request.data.get('content')
+#     subreddit_id = request.data.get('subredditId')
+#     user = request.user
+#     title = request.data.get('title')
+
+#     subreddit = Subreddit.objects.get(id=subreddit_id)
+
+#     post = Post.objects.create(
+#         title=title,
+#         content=content,
+#         subreddit=subreddit,
+#         author=user
+#     )
+#     return Response({'id'})
+
+#ASTK
+@api_view(['POST', 'GET'])
+def post_list(request):
+    if request.method == 'GET':
+        posts = Post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        content = request.data.get('content')
+        subreddit_id = request.data.get('subredditId')
+        user = request.user
+        title = request.data.get('title')
+    
+        subreddit = Subreddit.objects.get(id=subreddit_id)
+    
+        post = Post.objects.create(
+            title=title,
+            content=content,
+            subreddit=subreddit,
+            author=user
+        )
+        return Response({'message': 'successfully created'} ,status=status.HTTP_204_NO_CONTENT)
+
+
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def post_detail(request, pk):
+#     try:
+#         post = Post.objects.get(pk=pk)
+#     except Post.DoesNotExist:
+#         return Response(status=404)
+
+#     if request.method == 'GET':
+#         serializer = PostSerializer(post)
+#         return Response(serializer.data)
+
+#     elif request.method == 'PUT':
+#         serializer = PostSerializer(post, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=400)
+
+#     elif request.method == 'DELETE':
+#         post.delete()
+#         return Response(status=204)

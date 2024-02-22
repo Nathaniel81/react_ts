@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import MiniCreatePost from '@/components/MiniCreatePost';
+import PostFeed from './PostFeed';
 
 
 const SubredditDetail = () => {
@@ -12,6 +13,8 @@ const SubredditDetail = () => {
 		</h1>
 		<MiniCreatePost />
 		{/* <PostFeed initialPosts={subreddit.posts} subredditName={subreddit.name} /> */}
+		<PostFeed />
+
 	</>
 	
   )

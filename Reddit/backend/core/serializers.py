@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from .models import Subreddit
+from .models import Subreddit, Post
 from accounts.serializers import UserSerializer
-
 
 class SubredditSerializer(serializers.ModelSerializer):
     creator = UserSerializer(read_only=True)
@@ -29,3 +28,12 @@ class SubredditSerializer_detailed(serializers.ModelSerializer):
     def get_is_subscriber(self, obj):
         user = self.context['request'].user
         return obj.subscribers.filter(id=user.id).exists()
+
+class PostSerializer(serializers.ModelSerializer):
+    content = serializers.JSONField(read_only=True)
+    author = UserSerializer(read_only=True)
+    subreddit = SubredditSerializer(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = '__all__'
