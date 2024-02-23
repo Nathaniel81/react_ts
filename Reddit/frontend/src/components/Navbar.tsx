@@ -33,7 +33,7 @@ const Navbar = () => {
         <ModeToggle />
         </div>
       </div>
-      <Counter />
+      {/* <Counter /> */}
     </div>
   )
 }

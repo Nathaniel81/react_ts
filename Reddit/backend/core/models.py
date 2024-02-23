@@ -55,7 +55,7 @@ class Post(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    subreddit = models.ForeignKey(Subreddit, on_delete=models.CASCADE)
+    subreddit = models.ForeignKey(Subreddit, related_name='posts', on_delete=models.CASCADE)
     upvotes = models.ManyToManyField(User, blank=True, related_name='upvoted_posts')
     downvotes = models.ManyToManyField(User, blank=True, related_name='downvoted_posts')
 
@@ -67,7 +67,7 @@ class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    parent_post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    parent_post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     parent_comment = models.ForeignKey("Comment", null=True, blank=True, on_delete=models.CASCADE)
     upvotes = models.ManyToManyField(User, blank=True, related_name='upvoted_comments')
     downvotes = models.ManyToManyField(User, blank=True, related_name='downvoted_comments')

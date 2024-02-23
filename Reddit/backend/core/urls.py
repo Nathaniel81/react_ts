@@ -14,5 +14,6 @@ urlpatterns = [
     path('upload-file/', views.upload_file),
 
     # path('create-post/', views.create_post),
-    path('post-list/', views.post_list),
+    path('post-list/', views.CreatePost),
+    path('subreddit/<str:subreddit_name>/posts/', views.SubredditPostsList.as_view()),
 ]

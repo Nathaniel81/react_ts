@@ -1,11 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 import {  RootState } from '@/redux/store'
+// import { PostCreationRequest } from '@/lib/validators/post';
 
-
+  interface Posts {
+    posts: null;
+  }
   interface Subreddit {
     id: string | null;
     name: string | null;
+    posts: Posts;
     created_at: string | null;
     updated_at: string | null;
     creator: string | null;
@@ -21,7 +25,9 @@ import {  RootState } from '@/redux/store'
   
   const initialState: SubredditState = {
     subreddit: {
+      id: null,
       name: null,
+      posts: [],
       created_at: null,
       updated_at: null,
       members_count: null,
@@ -67,7 +73,7 @@ const subredditDetailSlice = createSlice({
   name: 'subredditDetail',
   initialState,
   reducers: {
-    resetDetailState: () => initialState,
+    resetState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -87,3 +93,4 @@ const subredditDetailSlice = createSlice({
 })
 
 export default subredditDetailSlice.reducer
+export const { resetState } = subredditDetailSlice.actions;

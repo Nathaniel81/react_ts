@@ -13,7 +13,7 @@ from rest_framework import serializers
 
 
 class SubredditListCreateView(generics.ListCreateAPIView):
-    queryset = Subreddit.objects.all()
+    queryset = Subreddit.objects.all().order_by('-created_at')
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     # def list(self, request, *args, **kwargs):
@@ -218,28 +218,27 @@ def upload_file(request):
 #     return Response({'id'})
 
 #ASTK
-@api_view(['POST', 'GET'])
-def post_list(request):
-    if request.method == 'GET':
-        posts = Post.objects.all()
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data)
+@api_view(['POST'])
+def CreatePost(request):
+    content = request.data.get('content')
+    subreddit_id = request.data.get('subredditId')
+    user = request.user
+    title = request.data.get('title')
+    subreddit = Subreddit.objects.get(id=subreddit_id)
+    post = Post.objects.create(
+        title=title,
+        content=content,
+        subreddit=subreddit,
+        author=user
+    )
+    return Response({'message': 'successfully created'} ,status=status.HTTP_204_NO_CONTENT)
 
-    elif request.method == 'POST':
-        content = request.data.get('content')
-        subreddit_id = request.data.get('subredditId')
-        user = request.user
-        title = request.data.get('title')
-    
-        subreddit = Subreddit.objects.get(id=subreddit_id)
-    
-        post = Post.objects.create(
-            title=title,
-            content=content,
-            subreddit=subreddit,
-            author=user
-        )
-        return Response({'message': 'successfully created'} ,status=status.HTTP_204_NO_CONTENT)
+class SubredditPostsList(generics.ListAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        subreddit_name = self.kwargs['subreddit_name']
+        return Post.objects.filter(subreddit__name=subreddit_name).order_by('-created_at')
 
 
 # @api_view(['GET', 'PUT', 'DELETE'])
