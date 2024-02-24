@@ -5,6 +5,7 @@ import { MessageSquare } from 'lucide-react'
 import { Link } from "react-router-dom"
 import { useRef } from "react"
 import EditorOutput from "./EditorOutput"
+import PostVoteClient from "./PostVoteClient"
 
 
 interface PostProps {
@@ -19,22 +20,22 @@ interface PostProps {
 }
 
 const Post: FC<PostProps> = ({
-  post,//
+  post,
   votesAmt: _votesAmt,
   currentVote: _currentVote,
-  subredditName, //
-  commentAmt, //
+  subredditName, 
+  commentAmt, 
 }) => {
   const pRef = useRef<HTMLParagraphElement>(null)
 
   return (
     <div className='rounded-md bg-white shadow'>
       <div className='px-6 py-4 flex justify-between'>
-        {/* <PostVoteClient
+        <PostVoteClient
           postId={post.id}
           initialVotesAmt={_votesAmt}
           initialVote={_currentVote?.type}
-        /> */}
+        />
 
         <div className='w-0 flex-1'>
           <div className='max-h-40 mt-1 text-xs text-gray-500'>

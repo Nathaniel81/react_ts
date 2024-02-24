@@ -241,6 +241,76 @@ class SubredditPostsList(generics.ListAPIView):
         return Post.objects.filter(subreddit__name=subreddit_name).order_by('-created_at')
 
 
+from rest_framework.views import APIView
+from .models import Vote, VoteType
+
+class VoteView(APIView):
+    def patch(self, request, format=None):
+        user = request.user
+        post_id = request.data.get('postId')
+        vote_type = request.data.get('voteType')
+
+        if not post_id or not vote_type:
+            return Response({'detail': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
+
+        post = get_object_or_404(Post, id=post_id)
+
+        if vote_type not in [VoteType.UP, VoteType.DOWN]:
+            return Response({'detail': 'Invalid vote type'}, status=status.HTTP_400_BAD_REQUEST)
+
+        vote, created = Vote.objects.get_or_create(user=user, post=post, defaults={'type': vote_type})
+
+        if not created:
+            if vote.type == vote_type:
+                vote.delete()
+            else:
+                vote.type = vote_type
+                vote.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+# from django.core.cache import cache
+
+# class VoteView(APIView):
+#     CACHE_AFTER_UPVOTES = 1
+
+#     def patch(self, request, format=None):
+#         user = request.user
+#         post_id = request.data.get('postId')
+#         vote_type = request.data.get('voteType')
+#         if not post_id or not vote_type:
+#             return Response({'detail': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
+#         post = get_object_or_404(Post, id=post_id)
+#         if vote_type not in [VoteType.UP, VoteType.DOWN]:
+#             return Response({'detail': 'Invalid vote type'}, status=status.HTTP_400_BAD_REQUEST)
+#         vote, created = Vote.objects.get_or_create(user=user, post=post, defaults={'type': vote_type})
+#         if not created:
+#             if vote.type == vote_type:
+#                 vote.delete()
+#             else:
+#                 vote.type = vote_type
+#                 vote.save()
+
+#         Recount the votes
+#         votes = Vote.objects.filter(post=post)
+#         votes_amt = sum(1 for vote in votes if vote.type == VoteType.UP) - sum(1 for vote in votes if vote.type == VoteType.DOWN)
+
+#         Cache the post if the votes amount is greater than or equal to CACHE_AFTER_UPVOTES
+#         if votes_amt >= self.CACHE_AFTER_UPVOTES:
+#             cache.set(f'post:{post_id}', {
+#                 'authorUsername': post.author.username,
+#                 'content': post.content,
+#                 'id': post.id,
+#                 'title': post.title,
+#                 'currentVote': vote_type if vote.type == vote_type else None,
+#                 'createdAt': post.created_at,
+#             })
+
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
 # @api_view(['GET', 'PUT', 'DELETE'])
 # def post_detail(request, pk):
 #     try:

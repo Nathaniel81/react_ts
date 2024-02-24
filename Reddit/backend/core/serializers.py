@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from .models import Subreddit, Post, Comment
+from .models import Subreddit, Post, Comment, Vote
 from accounts.serializers import UserSerializer
+
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,10 +17,16 @@ class SubredditSerializer(serializers.ModelSerializer):
         model = Subreddit
         exclude = ('rules', 'description', ) 
 
+class VoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vote
+        fields = '__all__'
+
 class PostSerializer(serializers.ModelSerializer):
     content = serializers.JSONField(read_only=True)
     author = UserSerializer(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
+    votes = VoteSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post

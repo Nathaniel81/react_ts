@@ -16,4 +16,6 @@ urlpatterns = [
     # path('create-post/', views.create_post),
     path('post-list/', views.CreatePost),
     path('subreddit/<str:subreddit_name>/posts/', views.SubredditPostsList.as_view()),
+    path('subreddit/post/vote', views.VoteView.as_view()),
+
 ]

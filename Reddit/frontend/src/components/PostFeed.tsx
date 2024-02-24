@@ -17,6 +17,9 @@ const PostFeed = () => {
     const subredditPosts = useSelector((state: RootState) => state.postList);
     const { posts } = subredditPosts;
 
+    const userLogin = useSelector((state: RootState) => state.userLogin);
+    const { userInfo } = userLogin;
+
     const dispatch = useDispatch<AppDispatch>();
     const { slug } = useParams();
     const subredditName = slug ?? 'default'; 
@@ -33,15 +36,16 @@ const PostFeed = () => {
         <ul className='flex flex-col col-span-2 space-y-6'>
           {posts?.map((post, index) => {
 
-            // const votesAmt = post.votes.reduce((acc, vote) => {
-            //   if (vote.type === 'UP') return acc + 1
-            //   if (vote.type === 'DOWN') return acc - 1
-            //   return acc
-            // }, 0)
+            const votesAmt = post.votes.reduce((acc, vote) => {
+              if (vote.type === 'UP') return acc + 1
+              if (vote.type === 'DOWN') return acc - 1
+              return acc
+            }, 0)
     
-            // const currentVote = post.votes.find(
-            //   (vote) => vote.userId === session?.user.id
-            // )
+            const currentVote = post.votes.find(
+              (vote) => vote.user === userInfo.id
+            )
+            console.log(currentVote)
 
             return (
                 <li key={post.id}>
@@ -49,8 +53,8 @@ const PostFeed = () => {
                     post={post}
                     commentAmt={post.comments.length}
                     subredditName={subreddit?.name}
-                    // votesAmt={votesAmt}
-                    // currentVote={currentVote}
+                    votesAmt={votesAmt}
+                    currentVote={currentVote}
                   />
                 </li>
             )
