@@ -27,6 +27,7 @@ class PostSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
     votes = VoteSerializer(many=True, read_only=True)
+    subreddit = SubredditSerializer(read_only=True)
 
     class Meta:
         model = Post
@@ -38,7 +39,7 @@ class SubredditSerializer_detailed(serializers.ModelSerializer):
     moderators = UserSerializer(many=True, read_only=True)
     members_count = serializers.SerializerMethodField()
     is_subscriber = serializers.SerializerMethodField()
-    # posts = PostSerializer(many=True, read_only=True)
+    posts = PostSerializer(many=True, read_only=True)
 
     class Meta:
         model = Subreddit

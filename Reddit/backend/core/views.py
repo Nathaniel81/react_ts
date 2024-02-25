@@ -240,6 +240,25 @@ class SubredditPostsList(generics.ListAPIView):
         subreddit_name = self.kwargs['subreddit_name']
         return Post.objects.filter(subreddit__name=subreddit_name).order_by('-created_at')
 
+from django.db.models import Count, Q, F
+
+class PostListView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Post.objects.annotate(
+            upvotes=Count('votes', filter=Q(votes__type=VoteType.UP)),
+            downvotes=Count('votes', filter=Q(votes__type=VoteType.DOWN))
+        ).annotate(net_votes=F('upvotes') - F('downvotes'))
+
+        if user.is_authenticated:
+            queryset = queryset.filter(subreddit__subscribers=user)
+        
+        return queryset.order_by('-net_votes', '-created_at')
+
+
 
 from rest_framework.views import APIView
 from .models import Vote, VoteType
@@ -311,24 +330,24 @@ class VoteView(APIView):
 
 
 
-# @api_view(['GET', 'PUT', 'DELETE'])
-# def post_detail(request, pk):
-#     try:
-#         post = Post.objects.get(pk=pk)
-#     except Post.DoesNotExist:
-#         return Response(status=404)
+@api_view(['GET', 'PUT', 'DELETE'])
+def post_detail(request, pk):
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        return Response(status=404)
 
-#     if request.method == 'GET':
-#         serializer = PostSerializer(post)
-#         return Response(serializer.data)
+    if request.method == 'GET':
+        serializer = PostSerializer(post)
+        return Response(serializer.data)
 
-#     elif request.method == 'PUT':
-#         serializer = PostSerializer(post, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=400)
+    elif request.method == 'PUT':
+        serializer = PostSerializer(post, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
-#     elif request.method == 'DELETE':
-#         post.delete()
-#         return Response(status=204)
+    elif request.method == 'DELETE':
+        post.delete()
+        return Response(status=204)

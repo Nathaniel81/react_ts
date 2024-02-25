@@ -3,6 +3,8 @@ from django.urls import path
 
 
 urlpatterns = [
+    path('posts/', views.PostListView.as_view()),
+
     path('subreddit', views.SubredditListCreateView.as_view(), name='list-subreddit'),
     path('subreddit/<str:name>', views.SubredditDetail.as_view(), name='subreddit-detail'),
 
@@ -13,7 +15,7 @@ urlpatterns = [
     path('upload-image/', views.upload_image),
     path('upload-file/', views.upload_file),
 
-    # path('create-post/', views.create_post),
+    path('post-detail/<str:pk>/', views.post_detail),
     path('post-list/', views.CreatePost),
     path('subreddit/<str:subreddit_name>/posts/', views.SubredditPostsList.as_view()),
     path('subreddit/post/vote', views.VoteView.as_view()),
