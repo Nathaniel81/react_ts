@@ -7,30 +7,12 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {  AppDispatch, RootState } from '@/redux/store'
 import { useParams } from 'react-router-dom';
-import { fetchPosts } from '@/redux/slices/postListSlice'
+import { fetchPosts } from '@/redux/slices/subredditPostsSlice'
 
 
-const PostFeed = () => {
-    const subredditDetail = useSelector((state: RootState) => state.subredditDetail);
-    const { subreddit } = subredditDetail;
-
-    const subredditPosts = useSelector((state: RootState) => state.postList);
-    const { posts } = subredditPosts;
-
-    const userLogin = useSelector((state: RootState) => state.userLogin);
-    const { userInfo } = userLogin;
-
-    const dispatch = useDispatch<AppDispatch>();
-    const { slug } = useParams();
-    const subredditName = slug ?? 'default'; 
-
-  
-    useEffect(() => {
-        if (!subreddit.name) {
-          dispatch(fetchSubreddit({ name: subredditName }))
-        }
-        dispatch(fetchPosts(slug))        
-      },[dispatch, subreddit, subredditName])
+const PostFeed = ({ posts, subredditName }) => {
+  const userLogin = useSelector((state: RootState) => state.userLogin);
+  const { userInfo } = userLogin;
 
       return (
         <ul className='flex flex-col col-span-2 space-y-6'>
@@ -43,16 +25,15 @@ const PostFeed = () => {
             }, 0)
     
             const currentVote = post.votes.find(
-              (vote) => vote.user === userInfo.id
+              (vote) => vote.user === userInfo?.id
             )
-            console.log(currentVote)
 
             return (
                 <li key={post.id}>
                   <Post
                     post={post}
                     commentAmt={post.comments.length}
-                    subredditName={subreddit?.name}
+                    subredditName={post.subreddit.name}
                     votesAmt={votesAmt}
                     currentVote={currentVote}
                   />

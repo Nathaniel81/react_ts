@@ -6,7 +6,9 @@ import subredditDetailReducer from './slices/subredditDetailSlice';
 import joinSubredditReducer from './slices/subscribeSlice';
 import leaveSubredditReducer from './slices/unsubscribeSlice';
 import postsReducer from './slices/postCreateSlice';
-import postListReducer from './slices/postListSlice';
+import subredditPostsReducer from './slices/subredditPostsSlice';
+import postsListReducer from './slices/postsListSlice';
+import postDetailReducer from './slices/postDetailSlice';
 
 const rootReducer = combineReducers({
 	userLogin: userLoginReducer,
@@ -16,7 +18,9 @@ const rootReducer = combineReducers({
 	subscribe: joinSubredditReducer,
 	unsubscribe: leaveSubredditReducer,
 	postCreate: postsReducer,
-	postList: postListReducer
+	subredditPosts: subredditPostsReducer,
+	postsList: postsListReducer,
+	postDetail: postDetailReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

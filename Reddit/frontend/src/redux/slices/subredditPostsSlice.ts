@@ -17,8 +17,8 @@ import axios, { AxiosError } from 'axios'
     error: null
   }
   
-  export const fetchPosts = createAsyncThunk(
-    'postList/fetchPosts',
+  export const fetchSubredditPosts = createAsyncThunk(
+    'postList/fetchSubredditPosts',
     async (subreddit_name, { rejectWithValue }) => {
       try {
         const { data } = await axios.get<Post[]>(`/api/subreddit/${subreddit_name}/posts/`)
@@ -31,28 +31,28 @@ import axios, { AxiosError } from 'axios'
   )
   
 
-const postListSlice = createSlice({
-  name: 'postList',
+const subredditPostsSlice = createSlice({
+  name: 'subredditPosts',
   initialState,
   reducers: {
 	resetState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchPosts.pending, (state) => {
+      .addCase(fetchSubredditPosts.pending, (state) => {
         state.loading = true
       })
-      .addCase(fetchPosts.fulfilled, (state, action) => {
+      .addCase(fetchSubredditPosts.fulfilled, (state, action) => {
         state.loading = false
         state.posts = action.payload
         state.error = null
       })
-      .addCase(fetchPosts.rejected, (state, action) => {
+      .addCase(fetchSubredditPosts.rejected, (state, action) => {
         state.loading = false
         state.error = action.error.message || null
       })
   }
 })
 
-export default postListSlice.reducer
-export const { resetState } = postListSlice.actions;
+export default subredditPostsSlice.reducer
+export const { resetState } = subredditPostsSlice.actions;

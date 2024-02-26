@@ -10,8 +10,6 @@ import { useSelector } from 'react-redux'
 import {  AppDispatch, RootState } from '@/redux/store'
 // import { toast, loginToast } from '@/lib/toast';
 import { Button } from '@/components/ui/Button';
-// Define your own VoteType and PostVoteRequest types
-// import { VoteType, PostVoteRequest } from '@/lib/types';
 import { PostVoteRequest } from '@/lib/validators/vote';
 
 
@@ -24,7 +22,6 @@ enum VoteType {
 //     voteType: VoteType;
 //     postId: string;
 //   }
-
 
 interface PostVoteClientProps {
   postId: string;
@@ -39,11 +36,14 @@ const PostVoteClient = ({
 }: PostVoteClientProps) => {
   const [votesAmt, setVotesAmt] = useState<number>(initialVotesAmt);
   const [currentVote, setCurrentVote] = useState(initialVote);
-  const toast = useToast();
+  const { toast } = useToast();
   const prevVote = usePrevious(currentVote)
+  
 
   const userLogin = useSelector((state: RootState) => state.userLogin);
   const { userInfo } = userLogin;
+
+  
 
   const { mutate: vote } = useMutation({
     mutationFn: async (type: VoteType) => {
@@ -58,7 +58,6 @@ const PostVoteClient = ({
         }
       }
 
-      // Adjust the API endpoint to match your backend
       await axios.patch('/api/subreddit/post/vote', payload, config);
     },
     onError: (err, voteType) => {
@@ -68,11 +67,15 @@ const PostVoteClient = ({
       // reset current vote
       setCurrentVote(prevVote);
 
-    //   if (err instanceof AxiosError) {
-    //     if (err.response?.status === 401) {
-    //       return loginToast();
-    //     }
-    //   }
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 401) {
+          return toast({
+            title: 'Unauthorized',
+            description: 'Please Login.',
+            variant: 'destructive',
+          });
+        }
+      }
 
       return toast({
         title: 'Something went wrong.',
@@ -96,9 +99,13 @@ const PostVoteClient = ({
     },
   });
 
-//   console.log(currentVote)
+  useEffect(() => {
+    // if (postId !== )
+    console.log('Here')
+  }, [prevVote])
 
-  return (
+
+  return (  
     <div className='flex flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0'>
       {/* upvote */}
       <Button

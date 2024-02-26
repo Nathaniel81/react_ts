@@ -4,10 +4,11 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {  AppDispatch, RootState } from '@/redux/store'
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import SubredditDetail from '@/components/SubredditDetail'
 import SubredditSidebar from '../components/SubredditSidebar';
 // import { buttonVariants } from '@/components/ui/Button'
 // import SubscribeLeaveToggle from '@/components/SubscribeLeaveToggle'
+import MiniCreatePost from '@/components/MiniCreatePost';
+import PostFeed from '@/components/PostFeed';
 
 
 const SubredditDetailPage = () => {
@@ -40,9 +41,13 @@ const SubredditDetailPage = () => {
 
         <div className='grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-4 py-6'>
           <ul className='flex flex-col col-span-2 space-y-6'>
-            <SubredditDetail />
+            {/* <SubredditDetail /> */}
+            <h1 className='font-bold text-3xl md:text-4xl h-14'>
+              r/{slug}
+            </h1>
+            <MiniCreatePost />
+            <PostFeed posts={subreddit.posts} subredditName={subreddit.name} />
           </ul>
-
           <SubredditSidebar />
           {/* <div className='overflow-hidden h-fit rounded-lg border border-gray-200 order-first md:order-last'>
             <div className='px-6 py-4'>
