@@ -20,4 +20,8 @@ urlpatterns = [
     path('subreddit/<str:subreddit_name>/posts/', views.SubredditPostsList.as_view()),
     path('subreddit/post/vote', views.VoteView.as_view()),
 
+    path('post/<str:post_id>/comments/', views.TopCommentsView.as_view()),
+    path('subreddit/post/comment/vote/', views.CommentVoteView.as_view()),
+    path('subreddit/post/comment/', views.CreateComment.as_view()),
+
 ]

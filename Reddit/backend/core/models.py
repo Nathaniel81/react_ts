@@ -81,11 +81,30 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     parent_post = models.ForeignKey(Post, related_name='comments', on_delete=models.CASCADE)
     parent_comment = models.ForeignKey("Comment", null=True, blank=True, on_delete=models.CASCADE)
-    upvotes = models.ManyToManyField(User, blank=True, related_name='upvoted_comments')
-    downvotes = models.ManyToManyField(User, blank=True, related_name='downvoted_comments')
+    # upvotes = models.ManyToManyField(User, blank=True, related_name='upvoted_comments')
+    # downvotes = models.ManyToManyField(User, blank=True, related_name='downvoted_comments')
+
+    # @property
+    # def net_votes(self):
+    #     upvotes = self.comment_votes.filter(type=VoteType.UP).count()
+    #     downvotes = self.comment_votes.filter(type=VoteType.DOWN).count()
+    #     return upvotes - downvotes
 
     def __str__(self):
         return f"{self.author}'s comment on \"{self.parent_post}\""
+
+class CommentVote(models.Model):
+    user = models.ForeignKey(User, related_name='user_votes', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, related_name='post_votes', null=True, blank=True, on_delete=models.CASCADE)
+    comment = models.ForeignKey('Comment', related_name='comment_votes', null=True, blank=True, on_delete=models.CASCADE)
+    type = models.CharField(max_length=4, choices=VoteType.choices)
+
+    # def save(self, *args, **kwargs):
+    #     self.value = 1 if self.type == VoteType.UP else -1
+    #     super().save(*args, **kwargs)
+
+    class Meta:
+        unique_together = ('user', 'post', 'comment')
 
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)

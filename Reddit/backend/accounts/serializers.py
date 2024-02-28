@@ -13,6 +13,15 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.is_staff
     def get__id(self, obj):
         return obj.id
+    # def to_internal_value(self, data):
+    #     if isinstance(data, User):
+    #         return data
+    #     return super().to_internal_value(data)
+
+    # def to_representation(self, instance):
+    #     if isinstance(instance, User):
+    #         return super().to_representation(instance)
+    #     return instance
 
 # class UserSerializerWithToken(UserSerializer):
 #     # token = serializers.SerializerMethodField(read_only=True)

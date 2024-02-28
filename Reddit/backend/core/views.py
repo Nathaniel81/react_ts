@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from .models import Subreddit, Post
-from .serializers import SubredditSerializer, SubredditSerializer_detailed, PostSerializer
+from .models import Subreddit, Post, VoteType, Vote, CommentVote, Comment
+from .serializers import SubredditSerializer, SubredditSerializer_detailed, PostSerializer, CommentSerializer
 # from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAuthenticatedOrReadOnly
 from django.db import IntegrityError
@@ -351,3 +351,62 @@ def post_detail(request, pk):
     elif request.method == 'DELETE':
         post.delete()
         return Response(status=204)
+
+class TopCommentsView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        post_id = self.kwargs['post_id']
+        queryset = Comment.objects.filter(parent_post_id=post_id).annotate(
+            upvotes=Count('comment_votes', filter=Q(comment_votes__type=VoteType.UP)),
+            downvotes=Count('comment_votes', filter=Q(comment_votes__type=VoteType.DOWN))
+        ).annotate(net_votes=F('upvotes') - F('downvotes'))
+
+        return queryset.order_by('-net_votes', '-created_at')
+
+class CommentVoteView(APIView):
+    def patch(self, request, format=None):
+        user = request.user
+        comment_id = request.data.get('commentId')
+        vote_type = request.data.get('voteType')
+        if not comment_id or not vote_type:
+            return Response({'detail': 'Missing required fields'}, status=status.HTTP_400_BAD_REQUEST)
+        comment = get_object_or_404(Comment, id=comment_id)
+        if vote_type not in [VoteType.UP, VoteType.DOWN]:
+            return Response({'detail': 'Invalid vote type'}, status=status.HTTP_400_BAD_REQUEST)
+        vote, created = CommentVote.objects.get_or_create(user=user, comment=comment, defaults={'type': vote_type})
+        if not created:
+            if vote.type == vote_type:
+                vote.delete()
+            else:
+                vote.type = vote_type
+                vote.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CreateComment(generics.CreateAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy()  # Make a mutable copy
+        print(data)
+        post = Post.objects.get(id=data['postId'])
+        parent_comment = None
+        if 'replyToId' in data:
+            parent_comment = Comment.objects.get(id=data['replyToId'])
+        data['parent_post'] = post.id
+        if parent_comment:
+            data['parent_comment_id'] = parent_comment.id
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+
