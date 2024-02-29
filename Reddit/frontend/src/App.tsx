@@ -9,6 +9,7 @@ import SubredditDetailPage from './pages/SubredditDetailPage';
 import CreatePostPage from './pages/CreatePostPage';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import PostDetailPage from './pages/PostDetailPage';
+import SettingsPage from './pages/SettingsPage';
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ function App() {
               <Route path="/r/:slug" element={<SubredditDetailPage />} />
               <Route path="/r/:slug/submit" element={<CreatePostPage />} />
               <Route path="/r/:slug/post/:id" element={<PostDetailPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </Routes>
           </div>
         </Router>

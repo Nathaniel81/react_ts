@@ -408,5 +408,12 @@ class CreateComment(generics.CreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+class SearchView(generics.ListAPIView):
+    serializer_class = SubredditSerializer
 
+    def get_queryset(self):
+        q = self.request.query_params.get('q', None)
+        if q is not None:
+            return Subreddit.objects.filter(name__startswith=q)[:5]
+        return Subreddit.objects.none()
 

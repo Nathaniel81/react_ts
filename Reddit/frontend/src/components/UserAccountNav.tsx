@@ -49,7 +49,7 @@ type UserLoginState = {
       <DropdownMenuContent className='bg-white' align='end'>
         <div className='flex items-center justify-start gap-2 p-2'>
           <div className='flex flex-col space-y-1 leading-none'>
-            {userInfo && userInfo.name && <p className='font-medium'>{userInfo && userInfo.name}</p>}
+            {userInfo && userInfo.username && <p className='font-medium'>{userInfo && userInfo.username}</p>}
             {userInfo && userInfo.email && (
               <p className='w-[200px] truncate text-sm text-muted-foreground'>
                 {userInfo && userInfo.email}

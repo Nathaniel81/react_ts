@@ -1,14 +1,11 @@
-// import { authOptions } from '@/lib/auth'
-// import { getServerSession } from 'next-auth'
 import { Icons } from './Icons'
 import UserAccountNav from './UserAccountNav'
-// import SearchBar from './SearchBar'
 import { useSelector} from 'react-redux'
 import { Link } from "react-router-dom"
 import { ModeToggle } from "./mode-toggle"
 import { buttonVariants } from './ui/Button'
 import { RootState } from '@/redux/store'
-import Counter from './uRf'
+import SearchBar from './SearchBar'
 
 const Navbar = () => {
   const userLogin = useSelector((state: RootState) => state.userLogin);
@@ -22,7 +19,7 @@ const Navbar = () => {
           <p className='hidden text-zinc-700 text-sm font-medium md:block'>Breadit</p>
         </Link>
       <div className="flex justify-between gap-5">
-        {/* <SearchBar /> */}
+        <SearchBar />
         {userInfo ? (
         <UserAccountNav />
         ) : (
@@ -33,7 +30,6 @@ const Navbar = () => {
         <ModeToggle />
         </div>
       </div>
-      {/* <Counter /> */}
     </div>
   )
 }

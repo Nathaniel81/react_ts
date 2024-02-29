@@ -28,10 +28,8 @@ const SubredditDetailPage = () => {
 
   // const isSubscribed = subreddit && subreddit.is_subscriber;
     useEffect(() => {
-      if (!subreddit.name) {
         dispatch(fetchSubreddit({ name: subredditName }))
-      }
-    },[dispatch, slug, subredditName, subreddit])
+    },[dispatch, subredditName])
 
 
   return (

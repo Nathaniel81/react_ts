@@ -23,5 +23,5 @@ urlpatterns = [
     path('post/<str:post_id>/comments/', views.TopCommentsView.as_view()),
     path('subreddit/post/comment/vote/', views.CommentVoteView.as_view()),
     path('subreddit/post/comment/', views.CreateComment.as_view()),
-
+    path('search/', views.SearchView.as_view()),
 ]

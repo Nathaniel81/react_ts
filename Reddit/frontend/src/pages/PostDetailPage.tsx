@@ -9,8 +9,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import {  AppDispatch, RootState } from '@/redux/store'
 import { useEffect } from 'react';
 import { fetchPostDetails } from '@/redux/slices/postDetailSlice';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { usePrevious } from '@mantine/hooks'
+import { cn } from '@/lib/utils'
+import { ChevronLeft } from 'lucide-react'
+import CommentsSection from '@/components/CommentsSection';
 
 
 
@@ -46,6 +49,15 @@ const PostDetailPage = () => {
 
   return (
     <div>
+        <Link
+          to='/'
+          className={cn(
+            buttonVariants({ variant: 'ghost' }),
+            'self-start -mt-20'
+          )}>
+          <ChevronLeft className='mr-2 h-4 w-4' />
+          Home
+        </Link>
         <div className='py-4 h-full flex flex-col sm:flex-row items-center sm:items-start justify-between'>
           <Suspense fallback={<PostVoteShell />}>
             <PostVoteClient
@@ -69,7 +81,7 @@ const PostDetailPage = () => {
            fallback={
              <Loader2 className='h-5 w-5 animate-spin text-zinc-500' />
            }>
-           {/* <CommentsSection postId={post?.id ?? cachedPost.id} /> */}
+           <CommentsSection  />
          </Suspense>
         </div>
       </div>

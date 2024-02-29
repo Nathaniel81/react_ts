@@ -6,12 +6,13 @@ import axios, { AxiosError } from 'axios';
 import { ArrowBigDown, ArrowBigUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import {  AppDispatch, RootState } from '@/redux/store'
 // import { toast, loginToast } from '@/lib/toast';
 import { Button } from '@/components/ui/Button';
 import { PostVoteRequest } from '@/lib/validators/vote';
-
+import { fetchPostDetails } from '@/redux/slices/postDetailSlice';
+import { fetchPosts } from '@/redux/slices/postsListSlice';
 
 enum VoteType {
     UP = 'UP',
@@ -37,11 +38,13 @@ const PostVoteClient = ({
   const [votesAmt, setVotesAmt] = useState<number>(initialVotesAmt);
   const [currentVote, setCurrentVote] = useState(initialVote);
   const { toast } = useToast();
-  const prevVote = usePrevious(currentVote)
+  const prevVote = usePrevious(currentVote);
   
 
   const userLogin = useSelector((state: RootState) => state.userLogin);
   const { userInfo } = userLogin;
+  const dispatch = useDispatch<AppDispatch>();
+
 
   
 
@@ -83,6 +86,10 @@ const PostVoteClient = ({
         variant: 'destructive',
       });
     },
+    onSuccess: () => {
+      dispatch(fetchPostDetails(postId))
+      dispatch(fetchPosts())
+    },
     onMutate: (type: VoteType) => {
       if (currentVote === type) {
         // User is voting the same way again, so remove their vote
@@ -99,10 +106,8 @@ const PostVoteClient = ({
     },
   });
 
-  useEffect(() => {
-    // if (postId !== )
-    console.log('Here')
-  }, [prevVote])
+  // useEffect(() => {
+  // }, [prevVote])
 
 
   return (  
